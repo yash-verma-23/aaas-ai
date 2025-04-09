@@ -1,0 +1,6 @@
+version: 3
+
+tasks:
+  ci-build:
+    cmds:
+      - docker build -t ci:latest .
