@@ -11,6 +11,28 @@ export class ScraperService {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
+
+    // Set a realistic user agent
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+        '(KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+    );
+
+    // Set viewport size
+    await page.setViewport({ width: 1366, height: 768 });
+
+    // Remove automation flags
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'webdriver', { get: () => false });
+      (window as any).chrome = { runtime: {} };
+      Object.defineProperty(navigator, 'plugins', {
+        get: () => [1, 2, 3],
+      });
+      Object.defineProperty(navigator, 'languages', {
+        get: () => ['en-US', 'en'],
+      });
+    });
+
     await page.goto(link, { waitUntil: 'domcontentloaded' });
     await this.delay(3000); // Let initial content load
 
