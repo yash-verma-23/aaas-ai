@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ScrapeDto } from './dto/scrape.dto';
 import puppeteer from 'puppeteer';
 import { getResponse } from '../../common/utils/response.util';
+import { delay } from '../../common/utils/time.util';
 
 @Injectable()
 export class ScraperService {
@@ -34,10 +35,12 @@ export class ScraperService {
     });
 
     await page.goto(link, { waitUntil: 'domcontentloaded' });
-    await this.delay(3000); // Let initial content load
+    await delay(3000); // Let initial content load
 
     // Expand all accordion items
     await page.evaluate(async () => {
+      const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
       const items = document.querySelectorAll('.accordion-item');
       for (const item of items) {
         const toggle: any = item.querySelector(
@@ -50,12 +53,12 @@ export class ScraperService {
           content.getAttribute('aria-hidden') !== 'false'
         ) {
           toggle.click();
-          await this.delay(500);
+          await delay(500);
         }
       }
     });
 
-    await this.delay(2000); // Wait after all expands
+    await delay(2000); // Wait after all expands
 
     // Get full text content including hidden text
     const fullText = await page.evaluate(() => {
@@ -76,14 +79,8 @@ export class ScraperService {
     return fullText;
   }
 
-  private delay(time: number) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
-
   async scrape(dto: ScrapeDto) {
-    const { links } = dto;
-    const promises = links.map((link) => this.handleScrapeData(link));
-    const responses = await Promise.all(promises);
-    return getResponse(responses);
+    const data = await this.handleScrapeData(dto.link);
+    return getResponse(data);
   }
 }
