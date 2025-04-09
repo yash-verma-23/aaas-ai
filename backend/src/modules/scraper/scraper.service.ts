@@ -6,7 +6,10 @@ import { getResponse } from '../../common/utils/response.util';
 @Injectable()
 export class ScraperService {
   private async handleScrapeData(link: string) {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     const page = await browser.newPage();
     await page.goto(link, { waitUntil: 'domcontentloaded' });
     await this.delay(3000); // Let initial content load
