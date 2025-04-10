@@ -13,8 +13,17 @@ export class ScraperController {
    * Scrape data using puppeteer
    */
   @Public() // TODO: remove public
-  @Post()
-  async scrape(@Body() dto: ScrapeDto) {
-    return await this.scraperService.scrape(dto);
+  @Post('puppeteer')
+  async scrapeUsingPuppeteer(@Body() dto: ScrapeDto) {
+    return await this.scraperService.scrapeUsingPuppeteer(dto);
+  }
+
+  /**
+   * Scrape data using scaper API
+   */
+  @Public() // TODO: remove public
+  @Post('scraper-api')
+  async scrapeUsingScraperApi(@Body() dto: ScrapeDto) {
+    return await this.scraperService.scrapeUsingScraperApi(dto);
   }
 }

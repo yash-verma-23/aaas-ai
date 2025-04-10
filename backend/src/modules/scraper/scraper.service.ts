@@ -3,6 +3,8 @@ import { ScrapeDto } from './dto/scrape.dto';
 import puppeteer from 'puppeteer';
 import { getResponse } from '../../common/utils/response.util';
 import { delay } from '../../common/utils/time.util';
+import axios from 'axios';
+import { configService } from '../../config/config.service';
 
 @Injectable()
 export class ScraperService {
@@ -79,8 +81,20 @@ export class ScraperService {
     return fullText;
   }
 
-  async scrape(dto: ScrapeDto) {
+  async scrapeUsingPuppeteer(dto: ScrapeDto) {
     const data = await this.handleScrapeData(dto.link);
+    return getResponse(data);
+  }
+
+  async scrapeUsingScraperApi(dto: ScrapeDto) {
+    const apiKey = configService.getValue('SCRAPER_API_KEY');
+    const { data } = await axios.get('https://api.scraperapi.com', {
+      params: {
+        api_key: apiKey,
+        url: dto.link,
+        render: 'true',
+      },
+    });
     return getResponse(data);
   }
 }
