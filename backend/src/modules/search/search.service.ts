@@ -84,13 +84,13 @@ export class SearchService {
       `site:${url} ${descriptionFr}`,
       `site:${url} ${path}`,
 
-      // `${nameEn}`,
-      // `${nameFr}`,
-      // `${providerEn}`,
-      // `${providerFr}`,
-      // `${descriptionEn}`,
-      // `${descriptionFr}`,
-      // `${path}`,
+      `${nameEn}`,
+      `${nameFr}`,
+      `${providerEn}`,
+      `${providerFr}`,
+      `${descriptionEn}`,
+      `${descriptionFr}`,
+      `${path}`,
     ];
     // console.log(queries, 'queries');
     return queries;
@@ -111,7 +111,7 @@ export class SearchService {
     if (!items) {
       return [];
     }
-    return items.map((item) => item.link) as string[];
+    return items.slice(0, 3).map((item) => item.link) as string[];
   }
 
   async searchUsingSerp(dto: any) {
