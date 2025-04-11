@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class ScrapeDto {
   /**
@@ -8,4 +9,12 @@ export class ScrapeDto {
   @IsString()
   @IsNotEmpty()
   link: string;
+
+  /**
+   * Whether to clean the scraped data or not
+   * @example false
+   */
+  @ApiPropertyOptional()
+  @IsBoolean()
+  cleanData: boolean = false;
 }
