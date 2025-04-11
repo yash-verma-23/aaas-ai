@@ -81,20 +81,36 @@ export class ScraperService {
     return fullText;
   }
 
+  private cleanHtml(html: string) {
+    if (!html) {
+      return null;
+    }
+    return html
+      .replace(/<script[\s\S]*?<\/script>/gi, '') // Remove <script> tags & their content
+      .replace(/<style[\s\S]*?<\/style>/gi, '') // Remove <style> tags & their content
+      .replace(/<\/?[^>]+(>|$)/g, '') // Remove all HTML tags
+      .replace(/\s{2,}/g, ' ') // Collapse extra spaces
+      .replace(/"/g, "'")
+      .trim();
+    // .slice(0, 4000)
+  }
+
   async scrapeUsingPuppeteer(dto: ScrapeDto) {
     const data = await this.handleScrapeData(dto.link);
     return getResponse(data);
   }
 
   async scrapeUsingScraperApi(dto: ScrapeDto) {
+    const { link, cleanData } = dto;
     const apiKey = configService.getValue('SCRAPER_API_KEY');
     const { data } = await axios.get('https://api.scraperapi.com', {
       params: {
         api_key: apiKey,
-        url: dto.link,
+        url: link,
         render: 'true',
       },
     });
-    return getResponse(data);
+    const cleanedData = this.cleanHtml(data);
+    return getResponse(cleanData ? cleanedData : data);
   }
 }
