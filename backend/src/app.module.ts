@@ -6,6 +6,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { ScraperModule } from './modules/scraper/scraper.module';
+import { SearchModule } from './modules/search/search.module';
 import jwtConfig from './config/jwt.config';
 
 @Module({
@@ -15,6 +16,7 @@ import jwtConfig from './config/jwt.config';
       useFactory: jwtConfig,
     }),
     ScraperModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [
