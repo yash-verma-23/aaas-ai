@@ -76,6 +76,21 @@ export class SearchService {
       descriptionFr,
     } = data;
     const queries = [
+      // `site:${url} ${nameEn} ${providerEn} ${descriptionEn}`,
+      // `site:${url} ${nameEn} ${descriptionEn}`,
+      // `site:${url} ${nameEn} ${providerEn}`,
+      // `site:${url} ${nameFr} ${providerFr} ${descriptionFr}`,
+      // `site:${url} ${nameFr} ${descriptionFr}`,
+      // `site:${url} ${nameFr} ${providerFr}`,
+
+      // `${nameEn} ${providerEn} ${descriptionEn}`,
+      // `${nameEn} ${descriptionEn}`,
+      // `${nameEn} ${providerEn}`,
+      // `${nameFr} ${providerFr} ${descriptionFr}`,
+      // `${nameFr} ${descriptionFr}`,
+      // `${nameFr} ${providerFr}`,
+
+      // Original
       `site:${url} ${nameEn}`,
       `site:${url} ${nameFr}`,
       `site:${url} ${providerEn}`,
@@ -84,15 +99,19 @@ export class SearchService {
       `site:${url} ${descriptionFr}`,
       `site:${url} ${path}`,
 
-      `${nameEn}`,
-      `${nameFr}`,
-      `${providerEn}`,
-      `${providerFr}`,
-      `${descriptionEn}`,
-      `${descriptionFr}`,
-      `${path}`,
+      // `${nameEn}`,
+      // `${nameFr}`,
+      // `${providerEn}`,
+      // `${providerFr}`,
+      // `${descriptionEn}`,
+      // `${descriptionFr}`,
+
+      // `${nameEn} ${descriptionEn}`,
+      // `${nameEn} ${providerEn}`,
+      // `${nameFr} ${descriptionFr}`,
+      // `${nameFr} ${providerFr}`
     ];
-    // console.log(queries, 'queries');
+    console.log('queries', queries);
     return queries;
   }
 
