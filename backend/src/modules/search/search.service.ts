@@ -5,9 +5,24 @@ import { removeDuplicates } from '../../common/utils/array.util';
 
 @Injectable()
 export class SearchService {
-  private getBaseUrl(url) {
+  private getRootUrl(url: string): string {
     const match = url?.match(/^https?:\/\/[^\/]+/);
     return match ? match[0] : '';
+  }
+
+  private getDomainUrl(url: string): string {
+    const match = url?.match(/^https?:\/\/([^\/]+)/);
+    if (!match) return '';
+    const hostname = match[1]; // e.g., 'api.sub.example.com'
+    const parts = hostname.split('.');
+    if (parts.length < 2) return hostname;
+    // Handle domains like co.uk, com.au by preserving the last 2 or 3 parts
+    const tld = parts.slice(-2).join('.');
+    const tldExceptions = ['co.uk', 'com.au', 'org.uk', 'co.in', 'gov.uk'];
+    if (tldExceptions.includes(tld) && parts.length >= 3) {
+      return parts.slice(-3).join('.'); // e.g., 'example.co.uk'
+    }
+    return parts.slice(-2).join('.'); // e.g., 'example.com'
   }
 
   private stripDateParts(text) {
@@ -52,7 +67,7 @@ export class SearchService {
 
   private cleanData(input: any) {
     return {
-      url: this.getBaseUrl(input?.url?.en),
+      url: this.getRootUrl(input?.url?.en),
       path: this.getPathFromUrl(input?.url?.en),
       nameEn: this.stripDateParts(input?.name?.en),
       nameFr: this.stripDateParts(input?.name?.fr),
