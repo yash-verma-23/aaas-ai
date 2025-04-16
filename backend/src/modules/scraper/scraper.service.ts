@@ -96,8 +96,10 @@ export class ScraperService {
   }
 
   async scrapeUsingPuppeteer(dto: ScrapeDto) {
-    const data = await this.handleScrapeData(dto.link);
-    return getResponse(data);
+    const { link, cleanData } = dto;
+    const data = await this.handleScrapeData(link);
+    const cleanedData = this.cleanHtml(data);
+    return getResponse(cleanData ? cleanedData : data);
   }
 
   async scrapeUsingScraperApi(dto: ScrapeDto) {
