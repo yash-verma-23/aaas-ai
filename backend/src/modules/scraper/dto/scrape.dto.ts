@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { TransformToBoolean } from '../../../common/decorators/transform-to-boolean.decorator';
 
 export class ScrapeDto {
   /**
@@ -15,6 +16,6 @@ export class ScrapeDto {
    * @example false
    */
   @ApiPropertyOptional()
-  @IsBoolean()
+  @TransformToBoolean()
   cleanData: boolean = false;
 }

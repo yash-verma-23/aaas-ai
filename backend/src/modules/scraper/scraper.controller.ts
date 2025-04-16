@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ScraperService } from './scraper.service';
 import { Public } from '../../common/decorators/public.decorator';
@@ -13,8 +13,8 @@ export class ScraperController {
    * Scrape data using puppeteer
    */
   @Public() // TODO: remove public
-  @Post('puppeteer')
-  async scrapeUsingPuppeteer(@Body() dto: ScrapeDto) {
+  @Get('puppeteer')
+  async scrapeUsingPuppeteer(@Query() dto: ScrapeDto) {
     return await this.scraperService.scrapeUsingPuppeteer(dto);
   }
 
