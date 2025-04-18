@@ -10,6 +10,7 @@ import { configService } from '../../config/config.service';
 export class ScraperService {
   private async handleScrapeData(link: string) {
     const browser = await puppeteer.launch({
+      timeout: 5 * 60 * 1000,
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
