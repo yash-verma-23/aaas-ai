@@ -37,7 +37,10 @@ export class ScraperService {
       });
     });
 
-    await page.goto(link, { waitUntil: 'domcontentloaded' });
+    await page.goto(link, {
+      waitUntil: 'domcontentloaded',
+      timeout: 2 * 60 * 1000,
+    });
     await delay(3000); // Let initial content load
 
     // Expand all accordion items
