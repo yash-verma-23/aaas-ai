@@ -10,6 +10,14 @@ export class SearchService {
     return match ? match[0] : '';
   }
 
+  private getRootUrlWithoutProtocolAndWww(url: string): string {
+    const rootUrl = this.getRootUrl(url);
+    const rootUrlWithoutProtocolAndWww = rootUrl
+      ?.replace(/^https?:\/\//, '')
+      ?.replace(/^www\./, '');
+    return rootUrlWithoutProtocolAndWww;
+  }
+
   private getDomainUrl(url: string): string {
     const match = url?.match(/^https?:\/\/([^\/]+)/);
     if (!match) return '';
@@ -67,7 +75,8 @@ export class SearchService {
 
   private cleanData(input: any) {
     return {
-      url: this.getRootUrl(input?.url?.en),
+      urlEn: input?.url?.en,
+      urlFr: input?.url?.fr,
       path: this.getPathFromUrl(input?.url?.en),
       nameEn: this.stripDateParts(input?.name?.en),
       nameFr: this.stripDateParts(input?.name?.fr),
@@ -81,7 +90,8 @@ export class SearchService {
   private getCombinations(dto: any): string[] {
     const data = this.cleanData(dto);
     const {
-      url,
+      urlEn,
+      urlFr,
       path,
       nameEn,
       nameFr,
@@ -91,6 +101,42 @@ export class SearchService {
       descriptionFr,
     } = data;
     const queries = [
+      // All query combinations
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${nameEn}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${nameFr}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${providerEn}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${providerFr}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${descriptionEn}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${descriptionFr}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${path}`,
+
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${nameEn}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${nameFr}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${providerEn}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${providerFr}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${descriptionEn}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${descriptionFr}`,
+      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${path}`,
+
+      // All groups
+      // `site:${this.getRootUrl(url)} ${nameEn}`,
+      // `site:${this.getRootUrl(url)} ${nameFr}`,
+      // `site:${this.getRootUrl(url)} ${providerEn}`,
+      // `site:${this.getRootUrl(url)} ${providerFr}`,
+
+      // `site:${this.getRootUrl(url)} ${descriptionEn}`,
+      // `site:${this.getRootUrl(url)} ${descriptionFr}`,
+      // `site:${this.getRootUrl(url)} ${path}`,
+
+      // `site:${this.getDomainUrl(url)} ${nameEn}`,
+      // `site:${this.getDomainUrl(url)} ${nameFr}`,
+      // `site:${this.getDomainUrl(url)} ${providerEn}`,
+      // `site:${this.getDomainUrl(url)} ${providerFr}`,
+
+      // `site:${this.getDomainUrl(url)} ${descriptionEn}`,
+      // `site:${this.getDomainUrl(url)} ${descriptionFr}`,
+      // `site:${this.getDomainUrl(url)} ${path}`,
+
       // `site:${url} ${nameEn} ${providerEn} ${descriptionEn}`,
       // `site:${url} ${nameEn} ${descriptionEn}`,
       // `site:${url} ${nameEn} ${providerEn}`,
@@ -106,13 +152,13 @@ export class SearchService {
       // `${nameFr} ${providerFr}`,
 
       // Original
-      `site:${url} ${nameEn}`,
-      `site:${url} ${nameFr}`,
-      `site:${url} ${providerEn}`,
-      `site:${url} ${providerFr}`,
-      `site:${url} ${descriptionEn}`,
-      `site:${url} ${descriptionFr}`,
-      `site:${url} ${path}`,
+      // `site:${url} ${nameEn}`,
+      // `site:${url} ${nameFr}`,
+      // `site:${url} ${providerEn}`,
+      // `site:${url} ${providerFr}`,
+      // `site:${url} ${descriptionEn}`,
+      // `site:${url} ${descriptionFr}`,
+      // `site:${url} ${path}`,
 
       // `${nameEn}`,
       // `${nameFr}`,
@@ -127,7 +173,7 @@ export class SearchService {
       // `${nameFr} ${providerFr}`
     ];
     console.log('queries', queries);
-    return queries;
+    return removeDuplicates(queries);
   }
 
   private async getDataFromSerp(name: string): Promise<string[]> {
