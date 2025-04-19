@@ -7,7 +7,7 @@ import { ScrapeDto } from './dto/scrape.dto';
 import puppeteer from 'puppeteer';
 import { getResponse } from '../../common/utils/response.util';
 import { delay } from '../../common/utils/time.util';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { configService } from '../../config/config.service';
 import { BulkScrapeDto } from './dto/bulk-scrape.dto';
 
@@ -130,7 +130,8 @@ export class ScraperService {
         data: cleanData ? cleanedData : data,
       };
     } catch (error) {
-      const errorMessage = `Scraper API error: ${error?.response?.statusCode}\n ${error?.response?.data}`;
+      const axiosError = error as AxiosError;
+      const errorMessage = `Scraper API error: StatusCode = ${axiosError?.response?.status}. Data = ${axiosError?.response?.data}`;
       if (throwError) {
         throw new InternalServerErrorException(errorMessage);
       } else {
