@@ -1,13 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { ScrapeDto } from './dto/scrape.dto';
 import puppeteer from 'puppeteer';
 import { getResponse } from '../../common/utils/response.util';
 import { delay } from '../../common/utils/time.util';
 import axios from 'axios';
 import { configService } from '../../config/config.service';
+import { BulkScrapeDto } from './dto/bulk-scrape.dto';
 
 @Injectable()
 export class ScraperService {
+  private readonly logger = new Logger(ScraperService.name);
+
   private async handleScrapeData(link: string) {
     const browser = await puppeteer.launch({
       timeout: 5 * 60 * 1000,
@@ -106,17 +113,50 @@ export class ScraperService {
     return getResponse(cleanData ? cleanedData : data);
   }
 
-  async scrapeUsingScraperApi(dto: ScrapeDto) {
+  async scrapeUsingScraperApi(dto: ScrapeDto, throwError = true) {
     const { link, cleanData } = dto;
     const apiKey = configService.getValue('SCRAPER_API_KEY');
-    const { data } = await axios.get('https://api.scraperapi.com', {
-      params: {
-        api_key: apiKey,
-        url: link,
-        render: 'true',
-      },
-    });
-    const cleanedData = this.cleanHtml(data);
-    return getResponse(cleanData ? cleanedData : data);
+    try {
+      const { data } = await axios.get('https://api.scraperapi.com', {
+        params: {
+          api_key: apiKey,
+          url: link,
+          render: 'true',
+        },
+      });
+      const cleanedData = this.cleanHtml(data);
+      return {
+        link,
+        data: cleanData ? cleanedData : data,
+      };
+    } catch (error) {
+      const errorMessage = `Scraper API error: ${error?.response?.statusCode}\n ${error?.response?.data}`;
+      if (throwError) {
+        throw new InternalServerErrorException(errorMessage);
+      } else {
+        this.logger.error(errorMessage);
+        return {
+          link,
+          data: null,
+          error: errorMessage,
+        };
+      }
+    }
+  }
+
+  async bulkScrapeUsingScraperApi(dto: BulkScrapeDto) {
+    const { links, cleanData } = dto;
+    const batchSize = 5;
+    const results = [];
+    for (let i = 0; i < links.length; i += batchSize) {
+      const batch = links.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batch.map((link) =>
+          this.scrapeUsingScraperApi({ link, cleanData }, false),
+        ),
+      );
+      results.push(...batchResults);
+    }
+    return getResponse(results);
   }
 }
