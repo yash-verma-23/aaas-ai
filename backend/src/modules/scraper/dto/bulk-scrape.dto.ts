@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class BulkScrapeDto {
@@ -14,7 +14,8 @@ export class BulkScrapeDto {
    * Links to scrape data from
    * @example ["https://example.com"]
    */
-  @IsString()
-  @IsNotEmpty()
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
   links: string[];
 }
