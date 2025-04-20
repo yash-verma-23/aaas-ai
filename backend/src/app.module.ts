@@ -7,6 +7,7 @@ import { AuthGuard } from './common/guards/auth.guard';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { ScraperModule } from './modules/scraper/scraper.module';
 import { SearchModule } from './modules/search/search.module';
+import { ScoringModule } from './modules/scoring/scoring.module';
 import jwtConfig from './config/jwt.config';
 
 @Module({
@@ -17,11 +18,12 @@ import jwtConfig from './config/jwt.config';
     }),
     ScraperModule,
     SearchModule,
+    ScoringModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    { provide: APP_GUARD, useClass: AuthGuard },
+    // { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },
   ],
 })
