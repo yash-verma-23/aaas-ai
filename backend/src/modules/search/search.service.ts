@@ -102,21 +102,21 @@ export class SearchService {
     } = data;
     const queries = [
       // All query combinations
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${nameEn}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${nameFr}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${providerEn}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${providerFr}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${descriptionEn}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${descriptionFr}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlEn)} ${path}`,
+      `site:${this.getDomainUrl(urlEn)} ${nameEn}`,
+      `site:${this.getDomainUrl(urlEn)} ${nameFr}`,
+      `site:${this.getDomainUrl(urlEn)} ${providerEn}`,
+      `site:${this.getDomainUrl(urlEn)} ${providerFr}`,
+      `site:${this.getDomainUrl(urlEn)} ${descriptionEn}`,
+      `site:${this.getDomainUrl(urlEn)} ${descriptionFr}`,
+      `site:${this.getDomainUrl(urlEn)} ${path}`,
 
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${nameEn}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${nameFr}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${providerEn}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${providerFr}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${descriptionEn}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${descriptionFr}`,
-      `site:${this.getRootUrlWithoutProtocolAndWww(urlFr)} ${path}`,
+      `site:${this.getDomainUrl(urlFr)} ${nameEn}`,
+      `site:${this.getDomainUrl(urlFr)} ${nameFr}`,
+      `site:${this.getDomainUrl(urlFr)} ${providerEn}`,
+      `site:${this.getDomainUrl(urlFr)} ${providerFr}`,
+      `site:${this.getDomainUrl(urlFr)} ${descriptionEn}`,
+      `site:${this.getDomainUrl(urlFr)} ${descriptionFr}`,
+      `site:${this.getDomainUrl(urlFr)} ${path}`,
 
       // All groups
       // `site:${this.getRootUrl(url)} ${nameEn}`,
